@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="WebProjectOOP.Business/WebProjectOOP.Business.csproj" />
+  <Project Path="WebProjectOOP.Core/WebProjectOOP.Core.csproj" />
+  <Project Path="WebProjectOOP.DataAccess/WebProjectOOP.DataAccess.csproj" />
+  <Project Path="WebProjectOOP.Entities/WebProjectOOP.Entities.csproj" />
+  <Project Path="WebProjectOOP/WebProjectOOP.csproj" />
+</Solution>
