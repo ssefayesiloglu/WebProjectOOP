@@ -1,6 +1,8 @@
 ﻿using System.Net.Http.Headers;
+using System;
+using System.Text;
 
-namespace WebProjectOOP.Core
+namespace WebProjectOOP.Core.Enums
 {
     public enum TaskState
     {

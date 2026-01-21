@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using System.Net.ServerSentEvents;
+using WebProjectOOP.Business.Abstract;
+using WebProjectOOP.Business.Concrete;
 using WebProjectOOP.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,18 +10,27 @@ builder.Services.AddSwaggerGen();
 
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ToDoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ITaskService, TaskService>();
+/*Eðer bu satýrý yazmasaydýk, Controller içinde her seferinde var service = new TaskService(_context); yazmak zorunda kalýrdýk.
+//Bu durumda Controller, TaskService'e ve _context'e göbekten baðýmlý olurdu.
+Þimdi ise Controller sadece "Bana ITaskService lazým" diyor; sistem arka planda her þeyi hazýrlayýp ona sunuyor.*/
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI();
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+
+
+    //app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    //app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -28,10 +40,8 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+app.MapControllers();
+  
 
 
 app.Run();

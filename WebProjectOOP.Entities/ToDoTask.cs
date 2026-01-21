@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebProjectOOP.Core;
+using WebProjectOOP.Core.Enums;
 
 namespace WebProjectOOP.Entities
 {
-    public class Task
+    public class ToDoTask
     {
         [Key]
         public int Id { get; set; }

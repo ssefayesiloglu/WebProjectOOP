@@ -10,6 +10,6 @@ namespace WebProjectOOP.DataAccess
     {
         public ToDoContext(DbContextOptions<ToDoContext> options) : base(options) {}
 
-        public DbSet<Entities.Task> Tasks { get; set; }
+        public DbSet<Entities.ToDoTask> Tasks { get; set; }
     }
 }
