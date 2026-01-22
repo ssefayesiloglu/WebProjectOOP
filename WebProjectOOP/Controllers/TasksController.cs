@@ -1,26 +1,44 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client.Extensibility;
 using WebProjectOOP.Business.Abstract;
 
 namespace WebProjectOOP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TasksController : ControllerBase
+    public class TasksController : ControllerBase 
+        // ControllerBase sınıfından miras aldık. Hazır metodlara erişim ( ok(), notfound() gibi
     {
         private readonly ITaskService _taskService;
+        //sınıf içindeki özel alanlar alt çizgiyle başlar(_). readonly yazarak, bu değişkenin sadece inşa edici
+        // yani constructor içinde tanımlanabileceğini garanti ediyoruz.
 
-        public TasksController(ITaskService taskService)
+        public TasksController(ITaskService taskService) 
+            // dışarıdan bana bir "ITaskService" ver, onu kullanıcam diyoruz. nesneleri "new" ile oluşturmuyoruz.
         {
             _taskService = taskService;
         }
-        [HttpPost]
+        /*
+        Talep (ITaskService taskService): Constructor parantezinde 
+        "Bana bir ITaskService lazım, adı bu metodun içinde taskService olsun" dersin.
+
+        Kabul: .NET sistemi (Dependency Injection konteyneri) sana o gerçek nesneyi getirip parantezin içine bırakır.
+
+        Devir (_taskService = taskService;): Parantezin içindeki o "geçici" ismi 
+        (çünkü o isim sadece o metodun içinde yaşar), 
+        sınıfın her yerinden erişilebilen "kalıcı" _taskService rafına kopyalarsın.
+
+         */
+
+        [HttpPost] // veritabanına yeni veri eklerken kullanırız. HTTP Metodu.
         public async Task<IActionResult> Create(string title, string description)
+        // Task<IActionResult> işlemin asenkron olduğunu ve sonunda bir hhtp sonucu (başarılı, hata vb.) döneceğini beliritr
         {
-            await _taskService.Create(title, description);
+            await _taskService.Create(title, description); // servis katmanına gönderiyoruz. 
             return Ok("Kayıt Başarılı.");
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // belirli bir ID'ye göre veri çekmek için kullanılır. (id) değişkendir.
 
         public async Task<IActionResult> Get(int id)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using WebProjectOOP.Business.Abstract;
@@ -22,14 +23,18 @@ namespace WebProjectOOP.Business.Concrete
             await _context.Tasks.AddAsync(newTask);   //await kullanarak uyg. donmasını engelliyoruz.
             await _context.SaveChangesAsync();
         }
-        public async Task<Entities.ToDoTask> Get(int id) //Task<Entities.Task> yazmamızın sebebi, bu metodun sonunda elmizde bir "Task" 
-                                                                                   // verisi kalacak olmasıdır.
+        public async Task<Entities.ToDoTask> Get(int id) //Task<Entities.ToDoTask> yazmamızın sebebi, bu metodun sonunda elmizde bir "Task" 
+                                                         // verisi kalacak olmasıdır.
         {
             var task = await _context.Tasks.FindAsync(id);
-            return task;
+            //if (task != null)
+            {
+                return task;
+            }
+            
         }
 
-        async Task ITaskService.Update(int id, string title, string description)
+        public async Task Update(int id, string title, string description)
         {
             var existingTask = await _context.Tasks.FindAsync(id);  //FirstOrDefault fonk. - Select Kullanımlarını öğren.
             if (existingTask != null)                                 
@@ -51,7 +56,7 @@ namespace WebProjectOOP.Business.Concrete
         SaveChangesAsync komutu verildiğinde sistem sadece değişen
         alanları algılar ve veritabanına otomatik olarak mühürler*/
 
-        async Task ITaskService.Delete(int id) 
+        public async Task Delete(int id) 
         {
             var deleteTask = await _context.Tasks.FindAsync(id);   //bool kontrolüne bak.
 
