@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Çözüm Öğeleri/">
+    <File Path="ReadMe.md" />
+  </Folder>
   <Project Path="WebProjectOOP.Business/WebProjectOOP.Business.csproj" />
   <Project Path="WebProjectOOP.Core/WebProjectOOP.Core.csproj" />
   <Project Path="WebProjectOOP.DataAccess/WebProjectOOP.DataAccess.csproj" />

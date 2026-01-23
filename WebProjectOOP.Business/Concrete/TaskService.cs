@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using WebProjectOOP.Business.Abstract;
 using WebProjectOOP.DataAccess;
+using WebProjectOOP.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
@@ -12,11 +14,13 @@ namespace WebProjectOOP.Business.Concrete
     public class TaskService(ToDoContext _context) : ITaskService //context in amacı veritabanı iletişimdenki köprüyü kurmak. servis başladığında otomatik ToDoContext buraya gelir.
     {
          public async Task Create(string title, string description)
+            //aync: bu metodun içinde 'await' kullanılabilir.
+            //bu metod bloklanmadan çalışacak.
         {
             var newTask = new Entities.ToDoTask()
             {
-                Title = title,
-                Description = description,
+                Title = title,                    //bu yapı Objext Initializer(19-24)
+                Description = description,       
                 State = Core.Enums.TaskState.Todo,
                 CreatingTime = DateTime.Now,
             };
@@ -65,6 +69,10 @@ namespace WebProjectOOP.Business.Concrete
                 _context.Tasks.Remove(deleteTask);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<List<ToDoTask>> GetAll()
+        {
+            return await _context.Tasks.ToListAsync();
         }
 
     }

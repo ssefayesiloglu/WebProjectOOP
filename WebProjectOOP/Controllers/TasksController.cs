@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client.Extensibility;
 using WebProjectOOP.Business.Abstract;
+using WebProjectOOP.Entities.Dtos;
 
 namespace WebProjectOOP.Controllers
 {
@@ -32,10 +33,10 @@ namespace WebProjectOOP.Controllers
          */
 
         [HttpPost] // veritabanına yeni veri eklerken kullanırız. HTTP Metodu.
-        public async Task<IActionResult> Create(string title, string description)
+        public async Task<IActionResult> Create([FromBody] TaskCreateDto dto) 
         // Task<IActionResult> işlemin asenkron olduğunu ve sonunda bir hhtp sonucu (başarılı, hata vb.) döneceğini beliritr
         {
-            await _taskService.Create(title, description); // servis katmanına gönderiyoruz. 
+            await _taskService.Create(dto.Title, dto.Description); // servis katmanına gönderiyoruz. 
             return Ok("Kayıt Başarılı.");
         }
         [HttpGet("{id}")] // belirli bir ID'ye göre veri çekmek için kullanılır. (id) değişkendir.
@@ -50,11 +51,19 @@ namespace WebProjectOOP.Controllers
             }
             return Ok(result);
         }
-        [HttpPut]
 
-        public async Task<IActionResult> Put(int id, string title, string description) 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            await _taskService.Update(id, title, description);
+            var result = await _taskService.GetAll();
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+
+        public async Task<IActionResult> Put(int id, [FromBody] TaskUpdateDto dto) 
+        {
+            await _taskService.Update(id, dto.Title, dto.Description);
             return Ok("Başarıyla GÜncellendi");
         }
         [HttpDelete("{id}")]
