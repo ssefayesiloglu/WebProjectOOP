@@ -27,7 +27,7 @@ namespace WebProjectOOP.Business.Concrete
             await _context.Tasks.AddAsync(newTask);   //await kullanarak uyg. donmasını engelliyoruz.
             await _context.SaveChangesAsync();
         }
-        public async Task<Entities.ToDoTask> Get(int id) //Task<Entities.ToDoTask> yazmamızın sebebi, bu metodun sonunda elmizde bir "Task" 
+        public async Task<ToDoTask> Get(int id) //Task<Entities.ToDoTask> yazmamızın sebebi, bu metodun sonunda elmizde bir "Task" 
                                                          // verisi kalacak olmasıdır.
         {
             var task = await _context.Tasks.FindAsync(id);

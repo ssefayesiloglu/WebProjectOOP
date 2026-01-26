@@ -7,7 +7,7 @@ namespace WebProjectOOP.Business.Abstract
 {
     public interface ITaskService
     {
-        Task<Entities.ToDoTask> Get(int id); // geriye değer döndürdüğü için todotask a gittik
+        Task<ToDoTask> Get(int id); // geriye değer döndürdüğü için todotask a gittik
 
         Task Create(string title, string description);// geri değer döndürmüyor
         Task Update(int id, string title, string description);

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Net.ServerSentEvents;
+using WebProjectOOP.Business;
 using WebProjectOOP.Business.Abstract;
 using WebProjectOOP.Business.Concrete;
 using WebProjectOOP.DataAccess;
@@ -12,7 +13,7 @@ builder.Services.AddSwaggerGen();
 // Add services to the container.
 builder.Services.AddControllers();
 // 1. CORS Servisini Ekliyoruz (React'in konuþabilmesi için)
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactIzni", policy =>
     {
@@ -20,11 +21,11 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()  // GET, POST, PUT, DELETE hepsine izin ver
               .AllowAnyHeader(); // Tüm baþlýklara izin ver
     });
-});
+});*/
 
 builder.Services.AddDbContext<ToDoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddHttpClient<IAiService, OllamaAiService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 /*Eðer bu satýrý yazmasaydýk, Controller içinde her seferinde var service = new TaskService(_context); yazmak zorunda kalýrdýk.
 //Bu durumda Controller, TaskService'e ve _context'e göbekten baðýmlý olurdu.
@@ -47,7 +48,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 // 2. CORS'u Devreye Alýyoruz (Sýralama çok önemli!)
-app.UseCors("ReactIzni");
+//app.UseCors("ReactIzni");
 
 app.UseAuthorization();
 

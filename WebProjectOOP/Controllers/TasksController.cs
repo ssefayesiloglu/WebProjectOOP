@@ -1,24 +1,39 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client.Extensibility;
+using WebProjectOOP.Business;
 using WebProjectOOP.Business.Abstract;
 using WebProjectOOP.Entities.Dtos;
 
 namespace WebProjectOOP.Controllers
 {
+
+
+
     [Route("api/[controller]")]
     [ApiController]
+
     public class TasksController : ControllerBase 
         // ControllerBase sınıfından miras aldık. Hazır metodlara erişim ( ok(), notfound() gibi
     {
         private readonly ITaskService _taskService;
+        private readonly IAiService _aiService;
         //sınıf içindeki özel alanlar alt çizgiyle başlar(_). readonly yazarak, bu değişkenin sadece inşa edici
         // yani constructor içinde tanımlanabileceğini garanti ediyoruz.
 
-        public TasksController(ITaskService taskService) 
+        public TasksController(ITaskService taskService, IAiService aiService) 
             // dışarıdan bana bir "ITaskService" ver, onu kullanıcam diyoruz. nesneleri "new" ile oluşturmuyoruz.
         {
             _taskService = taskService;
+            _aiService = aiService;
+        }
+
+
+        [HttpGet("generate-description")]
+        public async Task<IActionResult> GenerateAiDescription(string title)
+        {
+            var result = await _aiService.GenerateDescriptionAsync(title);
+            return Ok(new { description = result });
         }
         /*
         Talep (ITaskService taskService): Constructor parantezinde 
