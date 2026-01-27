@@ -11,5 +11,7 @@ namespace WebProjectOOP.DataAccess
         public ToDoContext(DbContextOptions<ToDoContext> options) : base(options) {}
 
         public DbSet<ToDoTask> Tasks { get; set; }
+
+        public DbSet<UserTask> Users { get; set; }
     }
 }

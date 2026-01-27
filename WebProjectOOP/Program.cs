@@ -12,16 +12,6 @@ builder.Services.AddSwaggerGen();
 
 // Add services to the container.
 builder.Services.AddControllers();
-// 1. CORS Servisini Ekliyoruz (React'in konuþabilmesi için)
-/*builder.Services.AddCors(options =>
-{
-    options.AddPolicy("ReactIzni", policy =>
-    {
-        policy.AllowAnyOrigin()  // Þimdilik herkese izin ver (Localhost vs.)
-              .AllowAnyMethod()  // GET, POST, PUT, DELETE hepsine izin ver
-              .AllowAnyHeader(); // Tüm baþlýklara izin ver
-    });
-});*/
 
 builder.Services.AddDbContext<ToDoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -124,7 +124,7 @@ Ollama ile iletiþim için C# sýnýflarý (DTO) üzerinden bir JSON köprüsü kurulmuþt
 
 ### B. Ýletiþim Protokolü: HttpClient
 * C# tarafýnda `HttpClient` sýnýfý kullanýlarak asenkron bir iletiþim hattý kurulmuþtur.
-* **PostAsJsonAsync:** C# nesnesi (Request DTO) otomatik olarak JSON'a serileþtirilir ve Ollama'nýn yerel adresine (`http://localhost:11434/api/generate`) gönderilir.
+* **PostAsJsonAsync:** C# nesnesi (Request DTO) otomatik olarak JSON'a serileþtirilir ve Ollama'nýn yerel adresine (`http://slocalhost:11434/api/generate`) gönderilir.
 * **Asenkron Yapý:** Uygulamanýn AI yanýt beklerken kilitlenmemesi için `async/await` yapýsý kullanýlmýþtýr.
 
 ## 3. Mühendislik Prensipleri ve Uygulanan Desenler

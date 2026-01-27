@@ -50,24 +50,25 @@ namespace WebProjectOOP.Business.Concrete
 {
     public class OllamaAiService : IAiService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient;  //HttpClient: C# içinden dış bir web adresine (API) istek atmak için kullanılan standart araç.
 
-       
+
         public OllamaAiService(HttpClient httpClient)   // Dependency Injection ile HttpClient alıyoruz (Haberleşme hattımız)
         {
             _httpClient = httpClient;
         }
-
-        public async Task<string> GenerateDescriptionAsync(string title)
+        //state lerine göre ayırıp özet çıkarabilirz.
+        public async Task<string> GenerateDescriptionAsync(string title) 
         {
             
             var requestBody = new OllamaRequest   // 1. AI'ya ne soracağımızı hazırlıyoruz
             {
-                prompt = $"Bana '{title}' görevi için 2 cümlelik kısa ve motive edici 'türkçe' bir açıklama yazar mısın?"
+                prompt = $"Bana '{title}' görevi için 1 cümlelik 'türkçe' motivasyon cümlesi oluşturur musun"
+
             };
 
             
-            var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", requestBody);
+            var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", requestBody); //PostAsJsonAsync: Veriyi otomatik olarak JSON'a çevirip gönderen modern bir .NET metodu.
 
             if (response.IsSuccessStatusCode)
             {

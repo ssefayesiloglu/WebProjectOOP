@@ -14,6 +14,6 @@ namespace WebProjectOOP.Entities.Dtos
 
     public class OllamaResponse
     { 
-        public string response { get; set; }  //AI'ın ürettiği asıl metin buraya gelecek.
+        public string? response { get; set; }  //AI'ın ürettiği asıl metin buraya gelecek.
     }
 }
