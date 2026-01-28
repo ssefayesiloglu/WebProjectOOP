@@ -30,10 +30,10 @@ namespace WebProjectOOP.Controllers
 
 
         [HttpGet("generate-description")]
-        public async Task<IActionResult> GenerateAiDescription(string title)
+        public async Task<IActionResult> GenerateAiDescription(string title)  // IActionResult interfaceTTP durum kodu döndürü'ini kullandık. Hr. Esnekllik Sağlar.
         {
-            var result = await _aiService.GenerateDescriptionAsync(title);
-            return Ok(new { description = result });
+            var result = await _aiService.GenerateDescriptionAsync(title);    // result değişkenini var ile tamınladık. değişken tipini otomatik oluiturucak. kodun okunulabilirliği artıyor.
+            return Ok(new { description = result });                          // GenerateDescriptionAsync, OllamaAiService den AI mantığını çağırır. ordan soruyu ve cevabı çekiyoruz.
         }
         /*
         Talep (ITaskService taskService): Constructor parantezinde 

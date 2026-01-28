@@ -20,6 +20,18 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 /*Eðer bu satýrý yazmasaydýk, Controller içinde her seferinde var service = new TaskService(_context); yazmak zorunda kalýrdýk.
 //Bu durumda Controller, TaskService'e ve _context'e göbekten baðýmlý olurdu.
 Þimdi ise Controller sadece "Bana ITaskService lazým" diyor; sistem arka planda her þeyi hazýrlayýp ona sunuyor.*/
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // React'in çalýþtýðý adres
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,12 +49,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
-// 2. CORS'u Devreye Alýyoruz (Sýralama çok önemli!)
-//app.UseCors("ReactIzni");
+app.UseCors("AllowReactApp");
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
 
 app.MapControllers();
   

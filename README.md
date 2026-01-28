@@ -99,40 +99,58 @@ WebProjectOOP
 
 # .NET Core & Ollama Yerel LLM Entegrasyonu - Sistem Tasarým Belgesi
 
-Bu döküman, mevcut bir To-Do App uygulamasýnýn backend katmanýna yerel bir yapay zeka modelinin (Ollama/Llama 3) kurumsal mimari standartlarýnda entegre edilme sürecini detaylandýrýr.
+Bu döküman, mevcut bir To-Do App uygulamasýnýn backend katmanýna yerel bir yapay zeka 
+modelinin (Ollama/Llama 3) kurumsal mimari standartlarýnda entegre edilme 
+sürecini detaylandýrýr.
 
 ## 1. Mimari Tasarým ve Katmanlý Yapý (N-Tier Architecture)
 Proje, sorumluluklarýn net ayrýldýðý N-Tier mimari üzerine inþa edilmiþtir:
 
-* **Entities (Çekirdek Katman):** Uygulamanýn en alt katmanýdýr ve veri taþýma kalýplarýný (DTO) barýndýrýr. 
-    * Veritabaný varlýklarýndan baðýmsýz olarak, AI servisi ile konuþmak için `OllamaRequest` ve `OllamaResponse` yapýlarý bu katmanda konumlandýrýlmýþtýr.
+* **Entities (Çekirdek Katman):** Uygulamanýn en alt katmanýdýr ve veri taþýma 
+* kalýplarýný (DTO) barýndýrýr. 
+    * Veritabaný varlýklarýndan baðýmsýz olarak, AI servisi ile konuþmak için 
+      `OllamaRequest` ve `OllamaResponse` yapýlarý bu katmanda konumlandýrýlmýþtýr.
 * **Business (Ýþ Mantýðý Katmaný):** Projenin karar mekanizmasýdýr. 
     * **Abstract:** `IAiService` ile servisin yetenekleri soyutlanmýþtýr.
-    * **Concrete:** `OllamaAiService` ile bu yeteneklerin asýl iþ mantýðý (HTTP çaðrýlarý, veri iþleme) kodlanmýþtýr.
+    * **Concrete:** `OllamaAiService` ile bu yeteneklerin asýl iþ mantýðý (HTTP 
+      çaðrýlarý, veri iþleme) kodlanmýþtýr.
 * **API (Sunum Katmaný):** Dýþ dünyaya açýlan kapýdýr. 
-    * `TasksController` üzerinden AI hizmeti bir RESTful Endpoint (`api/tasks/generate-description`) olarak sunulmuþtur.
+    * `TasksController` üzerinden AI hizmeti bir RESTful Endpoint 
+      (`api/tasks/generate-description`) olarak sunulmuþtur.
 
 
 
 ## 2. Ollama Yerel LLM Entegrasyonunun Teknik Detaylarý
-Ollama, yerel makinede çalýþan bir Model Inference Server'dýr ve bu servisle RESTful API standartlarýnda haberleþilmiþtir.
+Ollama, yerel makinede çalýþan bir Model Inference Server'dýr ve bu servisle RESTful 
+API standartlarýnda haberleþilmiþtir.
 
 ### A. Veri Modelleme (The JSON Bridge)
 Ollama ile iletiþim için C# sýnýflarý (DTO) üzerinden bir JSON köprüsü kurulmuþtur:
-* **OllamaRequest:** `model` (llama3), `prompt` ve `stream` (false) parametrelerini içeren istek paketidir.
-* **OllamaResponse:** AI'nýn ürettiði ham metni `response` anahtarý altýnda yakalayan yanýt paketidir.
+* **OllamaRequest:** `model` (llama3), `prompt` ve `stream` (false) parametrelerini 
+  içeren istek paketidir.
+* **OllamaResponse:** AI'nýn ürettiði ham metni `response` anahtarý altýnda 
+  yakalayan yanýt paketidir.
 
 ### B. Ýletiþim Protokolü: HttpClient
-* C# tarafýnda `HttpClient` sýnýfý kullanýlarak asenkron bir iletiþim hattý kurulmuþtur.
-* **PostAsJsonAsync:** C# nesnesi (Request DTO) otomatik olarak JSON'a serileþtirilir ve Ollama'nýn yerel adresine (`http://slocalhost:11434/api/generate`) gönderilir.
-* **Asenkron Yapý:** Uygulamanýn AI yanýt beklerken kilitlenmemesi için `async/await` yapýsý kullanýlmýþtýr.
+* C# tarafýnda `HttpClient` sýnýfý kullanýlarak asenkron bir iletiþim hattý 
+  kurulmuþtur.
+* **PostAsJsonAsync:** C# nesnesi (Request DTO) otomatik olarak JSON'a 
+  serileþtirilir ve Ollama'nýn yerel adresine 
+  (`http://slocalhost:11434/api/generate`) gönderilir.
+* **Asenkron Yapý:** Uygulamanýn AI yanýt beklerken kilitlenmemesi 
+  için `async/await` yapýsý kullanýlmýþtýr.
 
 ## 3. Mühendislik Prensipleri ve Uygulanan Desenler
 Entegrasyon sürecinde modern yazýlým mühendisliði prensipleri uygulanmýþtýr:
 
-* **Dependency Injection (DI):** `Program.cs` dosyasýnda servisin kaydý yapýlarak, nesne yönetimi .NET'in IOC Container yapýsýna devredilmiþtir. Bu sayede sýnýflar arasýnda Gevþek Baðlýlýk (Loose Coupling) saðlanmýþtýr.
-* **Interface Segregation:** `IAiService` kullanýmýyla sistem SOLID prensiplerine uygun hale getirilmiþtir; servis sadece kendi sorumluluðu olan iþleri yapar.
-* **Hata Ayýklama (Debugging):** Süreç boyunca karþýlaþýlan `NullReferenceException` hatalarý, nesne baþlatma (Initialization) ve Dependency Injection mekanizmasýnýn çalýþma mantýðýnýn derinlemesine kavranmasýný saðlamýþtýr.
+* **Dependency Injection (DI):** `Program.cs` dosyasýnda servisin kaydý yapýlarak, 
+  nesne yönetimi .NET'in IOC Container yapýsýna devredilmiþtir. Bu sayede sýnýflar 
+  arasýnda Gevþek Baðlýlýk (Loose Coupling) saðlanmýþtýr.
+* **Interface Segregation:** `IAiService` kullanýmýyla sistem SOLID prensiplerine 
+  uygun hale getirilmiþtir; servis sadece kendi sorumluluðu olan iþleri yapar.
+* **Hata Ayýklama (Debugging):** Süreç boyunca karþýlaþýlan `NullReferenceException` 
+  hatalarý, nesne baþlatma (Initialization) ve Dependency Injection mekanizmasýnýn 
+  çalýþma mantýðýnýn derinlemesine kavranmasýný saðlamýþtýr.
 
 ## 4. Süreç Akýþ Tablosu (Log)
 
