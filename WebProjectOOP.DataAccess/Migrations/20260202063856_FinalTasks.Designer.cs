@@ -12,8 +12,8 @@ using WebProjectOOP.DataAccess;
 namespace WebProjectOOP.DataAccess.Migrations
 {
     [DbContext(typeof(ToDoContext))]
-    [Migration("20260127125609_AddUserTable")]
-    partial class AddUserTable
+    [Migration("20260202063856_FinalTasks")]
+    partial class FinalTasks
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,19 +37,17 @@ namespace WebProjectOOP.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.Property<string>("Summery")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-/*using System.Net.Http.Json;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 using WebProjectOOP.Business.Abstract;
 using WebProjectOOP.Entities.Dtos;
-using Microsoft.Identity.Client;
 
 namespace WebProjectOOP.Business.Concrete
 {
@@ -16,68 +15,35 @@ namespace WebProjectOOP.Business.Concrete
             _httpClient = httpClient;
         }
 
-        public async Task<string> GenerateDescriptionAsync(string title);
-
+        
+        public async Task<string> GenerateDescriptionAsync(string alldata)
         {
+            // Yeni Kurumsal Prompt Düzenlemesi
             var requestBody = new OllamaRequest
             {
-                Prompt
-            }
-
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-}*/
-//İleride Ollama yerine ChatGPT kullanmak istersek, sadece yeni bir sınıf yazıp bu interface'den türetmemiz yeterli olacaktır. Kodumuz esnek kalır.
-
-using System.Net.Http.Json;
-using System.Text.Json;
-using WebProjectOOP.Business.Abstract;
-using WebProjectOOP.Entities.Dtos;
-
-namespace WebProjectOOP.Business.Concrete
-{
-    public class OllamaAiService : IAiService
-    {
-        private readonly HttpClient _httpClient;  //HttpClient: C# içinden dış bir web adresine (API) istek atmak için kullanılan standart araç.
-
-
-        public OllamaAiService(HttpClient httpClient)   // Dependency Injection ile HttpClient alıyoruz (Haberleşme hattımız)
-        {
-            _httpClient = httpClient;
-        }
-        //state lerine göre ayırıp özet çıkarabilirz.
-        public async Task<string> GenerateDescriptionAsync(string title) 
-        {
-            
-            var requestBody = new OllamaRequest   // 1. AI'ya ne soracağımızı hazırlıyoruz
-            {
-                prompt = $"Bana '{title}' görevi için 1 cümlelik 'türkçe' motivasyon cümlesi oluşturur musun"
-
+                model = "llama3.2",
+                prompt = $@"Sen resmi bir proje analiz asistanısın. 
+    Aşağıdaki verileri kullanarak sadece 5 cümlelik profesyonel bir Türkçe rapor yaz. 
+    İNGİLİZCE VEYA İSPANYOLCA KELİME KULLANMA. 
+    
+    Veri kümesi: {alldata}
+    
+    Rapor Formatı:
+    1. Mevcut durum özeti (2 cümle).
+    2. Stratejik gelişim önerisi (2 cümle).
+    3. Genel sonuç (1 cümle).",
+                options = new OllamaOptions { temperature = 0 } // Modeli ciddiyete davet ediyoruz
             };
 
-            
-            var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", requestBody); //PostAsJsonAsync: Veriyi otomatik olarak JSON'a çevirip gönderen modern bir .NET metodu.
+            var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", requestBody);
 
             if (response.IsSuccessStatusCode)
             {
-               
                 var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
-                return result?.response ?? "Açıklama üretilemedi.";   // 3. Gelen JSON cevabını okuyoruz
+                return result?.response ?? "Analiz raporu oluşturulamadı.";
             }
 
-            return "AI Servisine ulaşılamadı.";
+            return "AI Servisine ulaşılamadı. Lütfen Ollama servisinin açık olduğundan emin olun.";
         }
     }
 }

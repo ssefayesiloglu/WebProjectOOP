@@ -13,6 +13,8 @@ namespace WebProjectOOP.Entities.Dtos
 
         public string? Description { get; set; }
 
+        public int UserId { get; set; }
+
 
     }
 }

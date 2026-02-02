@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WebProjectOOP.Entities.Dtos
+﻿public class OllamaRequest
 {
-    public class OllamaRequest
-    {
-        public string model { get; set; } = "llama3";
-        public string prompt { get; set; }
-        public bool stream {  get; set; }
+    public string model { get; set; } = "llama3.2";
+    public string prompt { get; set; }
+    public bool stream { get; set; } = false;
+    public OllamaOptions options { get; set; } = new OllamaOptions(); // Parametre mühürü
+}
 
-    }
+public class OllamaOptions
+{
+    // 0 değeri modeli en ciddi ve tutarlı hale getirir
+    public float temperature { get; set; } = 0f;
+    public int num_predict { get; set; } = 150; // Cevabı kısa tutar
+
+}
 
     public class OllamaResponse
-    { 
-        public string? response { get; set; }  //AI'ın ürettiği asıl metin buraya gelecek.
-    }
+{
+    public string? response { get; set; }
 }

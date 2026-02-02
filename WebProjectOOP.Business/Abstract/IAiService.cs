@@ -6,9 +6,10 @@ namespace WebProjectOOP.Business
 {
     public interface IAiService
     {
-        Task<string> GenerateDescriptionAsync(string title);
+      
+        Task<string> GenerateDescriptionAsync(string alldata);
 
-   
+
     }
 }
 /* Dependency Inversion prensibi. Yarın bir gün yerel Ollama yerine ChatGPT kullanmak istersek, 

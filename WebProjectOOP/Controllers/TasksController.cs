@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client.Extensibility;
 using WebProjectOOP.Business;
@@ -30,9 +31,9 @@ namespace WebProjectOOP.Controllers
 
 
         [HttpGet("generate-description")]
-        public async Task<IActionResult> GenerateAiDescription(string title)  // IActionResult interfaceTTP durum kodu döndürü'ini kullandık. Hr. Esnekllik Sağlar.
+        public async Task<IActionResult> GenerateAiDescription(string alldata)  
         {
-            var result = await _aiService.GenerateDescriptionAsync(title);    // result değişkenini var ile tamınladık. değişken tipini otomatik oluiturucak. kodun okunulabilirliği artıyor.
+            var result = await _aiService.GenerateDescriptionAsync(alldata);    // result değişkenini var ile tamınladık. değişken tipini otomatik oluiturucak. kodun okunulabilirliği artıyor.
             return Ok(new { description = result });                          // GenerateDescriptionAsync, OllamaAiService den AI mantığını çağırır. ordan soruyu ve cevabı çekiyoruz.
         }
         /*
@@ -47,13 +48,15 @@ namespace WebProjectOOP.Controllers
 
          */
 
-        [HttpPost] // veritabanına yeni veri eklerken kullanırız. HTTP Metodu.
-        public async Task<IActionResult> Create([FromBody] TaskCreateDto dto) 
-        // Task<IActionResult> işlemin asenkron olduğunu ve sonunda bir hhtp sonucu (başarılı, hata vb.) döneceğini beliritr
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] TaskCreateDto dto) // [FromBody] eklemezsen 400 hatası alırsın!
         {
-            await _taskService.Create(dto.Title, dto.Description); // servis katmanına gönderiyoruz. 
-            return Ok("Kayıt Başarılı.");
+            if (dto == null) return BadRequest("Veri boş geldi!");
+
+            await _taskService.Create(dto);
+            return Ok();
         }
+
         [HttpGet("{id}")] // belirli bir ID'ye göre veri çekmek için kullanılır. (id) değişkendir.
 
         public async Task<IActionResult> Get(int id)
@@ -68,18 +71,18 @@ namespace WebProjectOOP.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int userId)
         {
-            var result = await _taskService.GetAll();
-            return Ok(result);
+            var tasks = await _taskService.GetAll(userId);
+            return Ok(tasks);
         }
 
         [HttpPut("{id}")]
-
-        public async Task<IActionResult> Put(int id, [FromBody] TaskUpdateDto dto) 
+        public async Task<IActionResult> Put(int id, [FromBody] TaskUpdateDto dto)
         {
-            await _taskService.Update(id, dto.Title, dto.Description);
-            return Ok("Başarıyla GÜncellendi");
+            // dto içindeki State servise gider.
+            await _taskService.Update(id, dto.Title, dto.Description, dto.State);
+            return Ok("Başarıyla Güncellendi");
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WebProjectOOP.Business.Abstract;
+using WebProjectOOP.Core.Enums;
 using WebProjectOOP.DataAccess;
 using WebProjectOOP.Entities;
+using WebProjectOOP.Entities.Dtos;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
@@ -13,18 +15,18 @@ namespace WebProjectOOP.Business.Concrete
 {
     public class TaskService(ToDoContext _context) : ITaskService //context in amacı veritabanı iletişimdenki köprüyü kurmak. servis başladığında otomatik ToDoContext buraya gelir.
     {
-         public async Task Create(string title, string description)
-            //aync: bu metodun içinde 'await' kullanılabilir.
-            //bu metod bloklanmadan çalışacak.
+        public async Task Create(TaskCreateDto dto) // Ayrı parametreler yerine DTO aldık
         {
+        
             var newTask = new Entities.ToDoTask()
             {
-                Title = title,                    //bu yapı Objext Initializer(19-24)
-                Description = description,       
+                Title = dto.Title,
+                Description = dto.Description,
+                UserId = dto.UserId,
                 State = Core.Enums.TaskState.Todo,
-                CreatingTime = DateTime.Now,
+                CreatingTime = DateTime.Now
             };
-            await _context.Tasks.AddAsync(newTask);   //await kullanarak uyg. donmasını engelliyoruz.
+            await _context.Tasks.AddAsync(newTask);
             await _context.SaveChangesAsync();
         }
         public async Task<ToDoTask> Get(int id) //Task<Entities.ToDoTask> yazmamızın sebebi, bu metodun sonunda elmizde bir "Task" 
@@ -36,18 +38,24 @@ namespace WebProjectOOP.Business.Concrete
                 return task;
             }
             
+            
         }
 
-        public async Task Update(int id, string title, string description)
+
+        public async Task Update(int id, string title, string description, int state) // 'int state' eklendi!
         {
-            var existingTask = await _context.Tasks.FindAsync(id);  //FirstOrDefault fonk. - Select Kullanımlarını öğren.
-            if (existingTask != null)                                 
-            {                                                        
-                existingTask.Title = title;                                  
-                existingTask.Description = description;                    
-                                                                       
-                await _context.SaveChangesAsync();                            
-            }                                                              
+            var existingTask = await _context.Tasks.FindAsync(id);
+
+            if (existingTask != null)
+            {
+                existingTask.Title = title;
+                existingTask.Description = description;
+
+                // SQL'de değişmeyen o '0' rakamını canlandıran satır:
+                existingTask.State = (WebProjectOOP.Core.Enums.TaskState)state;
+
+                await _context.SaveChangesAsync(); // Değişikliği veritabanına mühürler.
+            }
         }
         /*Güncelleme işlemi, veritabanındaki mevcut kaydı (existing)
         asenkron bir şekilde bularak başlar; burada existingTask
@@ -70,9 +78,11 @@ namespace WebProjectOOP.Business.Concrete
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<List<ToDoTask>> GetAll()
+        public async Task<List<ToDoTask>> GetAll(int userId)
         {
-            return await _context.Tasks.ToListAsync();
+            return await _context.Tasks
+                         .Where(x => x.UserId == userId)
+                         .ToListAsync();
         }
 
     }

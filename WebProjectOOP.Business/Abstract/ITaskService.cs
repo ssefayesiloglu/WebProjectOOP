@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using WebProjectOOP.Core.Enums;
 using WebProjectOOP.Entities;
+using WebProjectOOP.Entities.Dtos;
 
 namespace WebProjectOOP.Business.Abstract
 {
     public interface ITaskService
     {
-        Task<ToDoTask> Get(int id); // geriye değer döndürdüğü için todotask a gittik
+        // Artık string, string, int değil; tek bir DTO bekliyoruz kanka!
+        Task Create(TaskCreateDto dto);
 
-        Task Create(string title, string description);// geri değer döndürmüyor
-        Task Update(int id, string title, string description);
+        // GetAll metoduna da userId filtresini mühürlemeyi unutma
+        Task<List<ToDoTask>> GetAll(int userId);
 
+        Task<ToDoTask> Get(int id);
+        Task Update(int id, string title, string description, int state);
         Task Delete(int id);
-        
-        Task<List<ToDoTask>> GetAll();
     }
-
 }
-//abstact(soyut): arayüzümüz (interface). bu, yapılacak işlerin listesidir. 
-//-görev eklenebilir, silinebilr vb.
-//nesne oluşturulmaz. ama referans noktası oluşturulabilir.
