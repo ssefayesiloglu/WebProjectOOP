@@ -21,15 +21,15 @@ namespace WebProjectOOP.Business.Concrete
             // Yeni Kurumsal Prompt Düzenlemesi
             var requestBody = new OllamaRequest
             {
-                model = "llama3.2",
+                model = "gemma3:4b",
                 prompt = $@"Sen resmi bir proje analiz asistanısın. 
-    Aşağıdaki verileri kullanarak sadece 5 cümlelik profesyonel bir Türkçe rapor yaz. 
-    İNGİLİZCE VEYA İSPANYOLCA KELİME KULLANMA. 
+    Aşağıdaki verileri kullanarak sadece 4 cümlelik profesyonel bir Türkçe rapor yaz. 
+    
     
     Veri kümesi: {alldata}
     
     Rapor Formatı:
-    1. Mevcut durum özeti (2 cümle).
+    1. Mevcut durum özeti (1 cümle).
     2. Stratejik gelişim önerisi (2 cümle).
     3. Genel sonuç (1 cümle).",
                 options = new OllamaOptions { temperature = 0 } // Modeli ciddiyete davet ediyoruz

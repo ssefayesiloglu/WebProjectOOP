@@ -1,6 +1,6 @@
 ﻿public class OllamaRequest
 {
-    public string model { get; set; } = "llama3.2";
+    public string model { get; set; } = "gemma3:4b";
     public string prompt { get; set; }
     public bool stream { get; set; } = false;
     public OllamaOptions options { get; set; } = new OllamaOptions(); // Parametre mühürü
