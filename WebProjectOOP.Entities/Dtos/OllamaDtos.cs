@@ -10,7 +10,7 @@ public class OllamaOptions
 {
     // 0 değeri modeli en ciddi ve tutarlı hale getirir
     public float temperature { get; set; } = 0f;
-    public int num_predict { get; set; } = 150; // Cevabı kısa tutar
+    public int num_predict { get; set; } = 200; // Cevabı kısa tutar
 
 }
 
